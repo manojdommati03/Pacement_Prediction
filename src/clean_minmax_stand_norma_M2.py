@@ -1,157 +1,187 @@
 # ---------------------------------------------------------
-# Numeric column pre-process Techniques
-# Mean, Median, mode
+# Numeric Column Pre-processing Techniques
+# Mean, Median, Mode
 # Feature Scaling, Standardization, and Normalization
-# Save all results in ONE CSV file (clean_minmax_stand_norma_M2.csv)
-# ------------------------------------------------------------
-# check the scikit-learn library is installed or not
-# if not install with the command "pip install scikit-learn"
+# Save all results in ONE CSV file
+# ---------------------------------------------------------
 
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, Normalizer
 import matplotlib.pyplot as plt
 
-
 # ------------------------------------------------------------
-# Load Dataset
-# ---------------------------------------
-# Replace with your dataset filename
-file_path =r"C:\Users\navya\OneDrive\Desktop\Machine L\Placement_prediction\dataset\placement_predict_50K_Raw.csv"
+# Step 1: Load Dataset
+# ------------------------------------------------------------
 
+file_path = r"C:\Users\navya\OneDrive\Desktop\Machine L\Placement_prediction\dataset\placement_predict_50K_Raw.csv"
 df = pd.read_csv(file_path)
 
 print("Original Dataset")
-print("------------------------")
+print("----------------------------")
 print(df.head())
 
-print("Dataset Shape:",df.shape)
-print("\nData Types")
-print("------------------------")
+print("Dataset Shape:", df.shape)
+
+print("\nData Types:")
+print("-------------------------------")
 print(df.dtypes)
 
-print("\n Missing Values:")
-print("------------------------")
+print("\nMissing Values:")
+print("-------------------------------")
 print(df.isnull().sum())
 
-print("\n Duplicate Records:", df.duplicated() .sum())
+print("\nDuplicate Records:", df.duplicated().sum())
 
 
 # ---------------------------------------------------
 # Step 2: Remove Duplicate Records
 # ---------------------------------------------------
+
 df = df.drop_duplicates()
+
+
 # ---------------------------------------------------
 # Step 3: Handle Missing Values
 # ---------------------------------------------------
 
-
 # Numerical Columns
-numerical_columns = df.sdelect_dtypes(include=['int64', 'float64']) .columns
+numerical_columns = df.select_dtypes(
+    include=['int64', 'float64']
+).columns
 
-# Fill missing values in numerical columns with mean
+# Fill missing numerical values with Mean
 for column in numerical_columns:
-    df[column] = df[column] .fillna(df[column].mean())
+    df[column] = df[column].fillna(df[column].mean())
+
 
 # Categorical Columns
-categorical_columns = df.select_dtypes(include=['object',]) .columns
+categorical_columns = df.select_dtypes(
+    include=['object']
+).columns
 
-# Fill missing values in categorical columns with mode
+# Fill missing categorical values with Mode
 for column in categorical_columns:
     df[column] = df[column].fillna(df[column].mode()[0])
 
+
 # ---------------------------------------------------
-# Step 4: Remove Leading and Trailing Spaces (Extra spaces from text columns)
+# Step 4: Remove Leading and Trailing Spaces
 # ---------------------------------------------------
+
 for column in categorical_columns:
     df[column] = df[column].str.strip()
 
-# ------------------------------------------------------------
-# Select Numeric Columns
-# ------------------------------------------------------------
-numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
 
+# ------------------------------------------------------------
+# Step 5: Select Numeric Columns
+# ------------------------------------------------------------
+
+numeric_columns = df.select_dtypes(
+    include=['int64', 'float64']
+).columns
 
 print("\nNumeric Columns:")
 print(list(numeric_columns))
+
+
 # ------------------------------------------------------------
-# Standardization (Z-score)
-# Mean = 0, Standard Deviation = 1
+# Step 6: Standardization (Z-score)
+# Mean = 0
+# Standard Deviation = 1
 # ------------------------------------------------------------
+
 standard_scaler = StandardScaler()
 
-
-standardized = standard_scaler.fit_transform(df[numeric_columns])
-
+standardized = standard_scaler.fit_transform(
+    df[numeric_columns]
+)
 
 for i, col in enumerate(numeric_columns):
-   df[col + "_Standardized"] = standardized[:, i]
+    df[col + "_Standardized"] = standardized[:, i]
 
 
 # ------------------------------------------------------------
-# Feature Scaling (Min-Max Scaling)
+# Step 7: Feature Scaling (Min-Max Scaling)
 # Values between 0 and 1
 # ------------------------------------------------------------
+
 minmax_scaler = MinMaxScaler()
 
-
-scaled = minmax_scaler.fit_transform(df[numeric_columns])
-
+scaled = minmax_scaler.fit_transform(
+    df[numeric_columns]
+)
 
 for i, col in enumerate(numeric_columns):
-   df[col + "_Scaled"] = scaled[:, i]
+    df[col + "_Scaled"] = scaled[:, i]
 
 
 # ------------------------------------------------------------
-# Normalization (L2 Normalization)
+# Step 8: Normalization (L2 Normalization)
 # Each row becomes a unit vector
 # ------------------------------------------------------------
+
 normalizer = Normalizer(norm='l2')
 
-
-normalized = normalizer.fit_transform(df[numeric_columns])
-
+normalized = normalizer.fit_transform(
+    df[numeric_columns]
+)
 
 for i, col in enumerate(numeric_columns):
-   df[col + "_Normalized"] = normalized[:, i]
+    df[col + "_Normalized"] = normalized[:, i]
+
 
 # ------------------------------------------------------------
-# Display Results after pre-processing (Verify Dataset)
+# Step 9: Display Results After Pre-processing
 # ------------------------------------------------------------
-print("\n Display Results after Preprocessed Dataset")
+
+print("\nDisplay Results after Preprocessed Dataset")
+print("------------------------------------------")
+
 print(df.head())
 
-print("\nDataset Shape:", df.shape)
+print("\nDataset Shape:")
+print(df.shape)
 
-print("\nDataset Information")
+print("\nDataset Information:")
 print(df.info())
 
 print("\nColumns in Dataset:")
 print(df.columns)
 
-print("\nMissing Values After Preprocessing")
+print("\nMissing Values After Preprocessing:")
 print(df.isnull().sum())
 
-print("\nDuplicate Records After Preprocessing")
+print("\nDuplicate Records After Preprocessing:")
 print(df.duplicated().sum())
 
+
 # ---------------------------------------------------
-# Step 8: Save Preprocessed Dataset
+# Step 10: Save Preprocessed Dataset
 # ---------------------------------------------------
-df.to_csv("C:/Users/navya/OneDrive/Desktop/Machine L/Placement_prediction/dataset/clean_minmax_stand_norma_M2.csv", index=False)
 
-print("\nPreprocessed dataset saved successfully.")
+output_file = 'C:/Users/navya/OneDrive/Desktop/Machine L/Placement_prediction/dataset/clean_minmax_stand_norma_M2.csv'
 
-# to display histogram of preprocessed data
-pf = pd.read_csv(r"C:\Users\navya\OneDrive\Desktop\Machine L\Placement_prediction\dataset\placement_predict_50K_Raw.csv")
-# Display histograms
-pf.hist(figsize=(12, 10), bins=10, edgecolor='black')
+df.to_csv(output_file, index=False)
 
-plt.suptitle("Histogram of Preprocessed Placement Dataset")
+print("\nPreprocessed dataset saved successfully!")
+print("File:", output_file)
+
+
+# ---------------------------------------------------
+# Step 11: Display Histogram
+# ---------------------------------------------------
+
+pf = pd.read_csv(output_file)
+
+pf.hist(
+    figsize=(12, 10),
+    bins=10,
+    edgecolor='black'
+)
+
+plt.suptitle(
+    "Histogram of Preprocessed Placement Dataset"
+)
+
 plt.tight_layout()
 plt.show()
-
-
-
-
-
-
