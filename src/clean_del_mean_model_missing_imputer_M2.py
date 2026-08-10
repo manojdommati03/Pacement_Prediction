@@ -16,13 +16,9 @@ import pandas as pd
 # All results are stored in ONE CSV file.
 # ============================================================
 
-
-
-
 # ------------------------------------------------------------
 # 1. READ DATASET
 # ------------------------------------------------------------
-
 
 input_file = r"C:/Users/navya/OneDrive/Desktop/Machine L/Placement_prediction/dataset/placement_predict_50K_Raw.csv"
 output_file = "C:/Users/navya/OneDrive/Desktop/Machine L/Placement_prediction/dataset/clean_del_mean_model_M2.csv"
@@ -42,9 +38,6 @@ print(df.head())
 print("\nDataset Shape:")
 print(df.shape)
 
-
-
-
 # ------------------------------------------------------------
 # 2. CHECK MISSING VALUES
 # ------------------------------------------------------------
@@ -53,27 +46,16 @@ print(df.shape)
 print("\nMissing Values in Original Dataset:")
 print(df.isnull().sum())
 
-
-
-
 # ------------------------------------------------------------
 # 3. CREATE COPY
 # ------------------------------------------------------------
 
-
 # The original dataset is never modified.
 
-
 df_original = df.copy()
-
-
-
-
 # ============================================================
 # METHOD 1: DELETION
 # ============================================================
-
-
 # Delete rows containing any missing value.
 #dropna() deletes any row that has at least one missing value.
 # dropna() removes values lin Nan or None  from data.
@@ -89,32 +71,22 @@ print("Original rows:", len(df_original))
 print("Rows after deletion:", len(df_deletion))
 print("Rows deleted:", len(df_original) - len(df_deletion))
 
-
-
-
 # ------------------------------------------------------------
 # Create a deletion indicator
 # ------------------------------------------------------------
 
-
 # 1 = row contains missing value and would be deleted
 # 0 = row contains no missing value
-
 
 deletion_indicator = (
    df_original.isnull().any(axis=1)
 ).astype(int)
 
-
-
-
 # ============================================================
 # METHOD 2: MEAN IMPUTATION
 # ============================================================
 
-
 df_mean = df_original.copy()
-
 
 # Find numerical columns
 
@@ -149,28 +121,17 @@ for column in numeric_columns:
            mean_value
        )
 
-
-
-
 print("\n" + "=" * 70)
 print("2. MEAN IMPUTATION")
 print("=" * 70)
 
-
 print(df_mean.head())
-
-
-
 
 # ============================================================
 # METHOD 3: MEDIAN IMPUTATION
 # ============================================================
 
-
 df_median = df_original.copy()
-
-
-
 
 for column in numeric_columns:
 
@@ -194,18 +155,11 @@ for column in numeric_columns:
            median_value
        )
 
-
-
-
 print("\n" + "=" * 70)
 print("3. MEDIAN IMPUTATION")
 print("=" * 70)
 
-
 print(df_median.head())
-
-
-
 
 # ============================================================
 # METHOD 4: MODEL-BASED IMPUTATION
